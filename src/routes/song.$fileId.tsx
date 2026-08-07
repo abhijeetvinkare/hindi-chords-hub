@@ -32,9 +32,9 @@ function SongDetail() {
   const openUrl = `https://drive.google.com/file/d/${fileId}/view`;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen overflow-x-hidden bg-background">
       <SiteHeader />
-      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+      <main className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-6">
         <Link
           to="/"
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
@@ -43,7 +43,7 @@ function SongDetail() {
         </Link>
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+          <h1 className="min-w-0 break-words text-xl font-semibold tracking-tight sm:text-3xl">
             {title || "Chord sheet"}
           </h1>
           <Button asChild size="sm">
@@ -57,7 +57,7 @@ function SongDetail() {
           <iframe
             src={previewUrl}
             title={title || "Chord sheet PDF"}
-            className="h-[75vh] w-full"
+            className="h-[65vh] w-full sm:h-[75vh]"
             allow="autoplay"
           />
         </div>
