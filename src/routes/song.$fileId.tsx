@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, ExternalLink } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import { SiteHeader } from "@/components/SiteHeader";
 import { Button } from "@/components/ui/button";
@@ -31,6 +32,29 @@ function SongDetail() {
   const previewUrl = `https://drive.google.com/file/d/${fileId}/preview`;
   const openUrl = `https://drive.google.com/file/d/${fileId}/view`;
 
+  // Google Drive's preview renders at a fixed desktop-ish width, so on narrow
+  // screens we render the iframe at a virtual width and scale it down to fit.
+  const VIRTUAL_WIDTH = 900;
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const update = () => setWidth(el.clientWidth);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const scale = width > 0 ? Math.min(1, width / VIRTUAL_WIDTH) : 1;
+  const frameWidth = scale < 1 ? VIRTUAL_WIDTH : "100%";
+  // Fixed viewer height reserved up-front so the Drive toolbar loading in
+  // doesn't shift the page.
+  const viewerHeight = "min(78vh, 900px)";
+
   return (
     <div className="min-h-screen overflow-x-hidden bg-background">
       <SiteHeader />
@@ -53,12 +77,27 @@ function SongDetail() {
           </Button>
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-xl border border-border bg-card">
+        <div
+          ref={wrapRef}
+          className="relative mt-6 w-full overflow-hidden rounded-xl border border-border bg-card"
+          style={{ height: viewerHeight }}
+        >
+          {!loaded && (
+            <div className="absolute inset-0 animate-pulse bg-muted/40" aria-hidden="true" />
+          )}
           <iframe
             src={previewUrl}
             title={title || "Chord sheet PDF"}
-            className="h-[65vh] w-full sm:h-[75vh]"
             allow="autoplay"
+            onLoad={() => setLoaded(true)}
+            style={{
+              width: frameWidth,
+              height: scale < 1 ? `calc(${viewerHeight} / ${scale})` : "100%",
+              border: 0,
+              transform: scale < 1 ? `scale(${scale})` : undefined,
+              transformOrigin: "top left",
+              display: "block",
+            }}
           />
         </div>
         <p className="mt-3 text-xs text-muted-foreground">
