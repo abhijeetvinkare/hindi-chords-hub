@@ -57,7 +57,10 @@ function Library() {
     for (const s of songs) if (s.category) set.add(s.category);
     set.delete("Uncategorized");
     set.delete("Hindi Hymns");
-    return ["All", ...[...set].sort()];
+    const preferred = ["Praise", "Worship", "Christmas", "Easter"];
+    const ordered = preferred.filter((c) => set.has(c));
+    const rest = [...set].filter((c) => !preferred.includes(c)).sort();
+    return ["All", ...ordered, ...rest];
   }, [data?.categories, songs]);
 
   const filtered = useMemo(() => {
