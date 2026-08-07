@@ -74,9 +74,9 @@ function Library() {
   }, [songs, query, tab, tags]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen overflow-x-hidden bg-background">
       <SiteHeader>
-        <div className="relative w-full max-w-xs">
+        <div className="relative w-full min-w-0 max-w-xs">
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={query}
@@ -88,13 +88,12 @@ function Library() {
         </div>
       </SiteHeader>
 
-      <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
+          <div className="min-w-0">
             <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">Song library</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              {songs.length} chord sheet{songs.length === 1 ? "" : "s"}, synced live from Google
-              Drive.
+              {songs.length} chord sheet{songs.length === 1 ? "" : "s"}
             </p>
           </div>
           <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
