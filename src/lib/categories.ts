@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
-export const CATEGORIES = ["Worship", "Praise", "Christmas", "Easter", "Hindi Hymns"] as const;
+export const CATEGORIES = ["Worship", "Praise", "Christmas", "Easter"] as const;
 export type Category = (typeof CATEGORIES)[number];
-export const UNCATEGORIZED = "Uncategorized";
 
 const STORAGE_KEY = "hwc.categories.v1";
 
