@@ -11,7 +11,7 @@ export type SongsResult = { songs: Song[]; configured: boolean };
 export const listSongs = createServerFn({ method: "GET" }).handler(
   async (): Promise<SongsResult> => {
     const folderId = "1kWgKH7SuXZFMHV0JBfd4A3WePtpPWfZO";
-    const apiKey = process.env["GOOGLE_DRIVE_API_KEY"];
+    const apiKey = process.env["GOOGLE_API_KEY"] ?? process.env["GOOGLE_DRIVE_API_KEY"];
     if (!apiKey) return { songs: [], configured: false };
 
     const songs: Song[] = [];
