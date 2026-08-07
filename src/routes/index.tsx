@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { CATEGORIES, UNCATEGORIZED, useCategoryTags, type Category } from "@/lib/categories";
+import { CATEGORIES, useCategoryTags, type Category } from "@/lib/categories";
 import { listSongs } from "@/lib/drive.functions";
 import { cn } from "@/lib/utils";
 
@@ -49,14 +49,15 @@ function Library() {
   const songs = data?.songs ?? [];
 
   const effectiveCategory = (title: string, driveCategory: string) =>
-    tags[title] ?? (driveCategory || UNCATEGORIZED);
+    tags[title] ?? driveCategory ?? "";
 
   const tabs = useMemo(() => {
     const set = new Set<string>(CATEGORIES);
     for (const c of data?.categories ?? []) set.add(c);
     for (const s of songs) if (s.category) set.add(s.category);
-    set.delete(UNCATEGORIZED);
-    return ["All", ...[...set].sort(), UNCATEGORIZED];
+    set.delete("Uncategorized");
+    set.delete("Hindi Hymns");
+    return ["All", ...[...set].sort()];
   }, [data?.categories, songs]);
 
   const filtered = useMemo(() => {
