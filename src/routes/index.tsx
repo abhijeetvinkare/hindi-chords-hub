@@ -36,8 +36,6 @@ export const Route = createFileRoute("/")({
   component: Library,
 });
 
-const TABS = ["All", ...CATEGORIES, UNCATEGORIZED] as const;
-
 function Library() {
   const fetchSongs = useServerFn(listSongs);
   const { data, isPending, isFetching, error, refetch } = useQuery({
@@ -50,14 +48,25 @@ function Library() {
 
   const songs = data?.songs ?? [];
 
+  const effectiveCategory = (title: string, driveCategory: string) =>
+    tags[title] ?? (driveCategory || UNCATEGORIZED);
+
+  const tabs = useMemo(() => {
+    const set = new Set<string>(CATEGORIES);
+    for (const c of data?.categories ?? []) set.add(c);
+    for (const s of songs) if (s.category) set.add(s.category);
+    set.delete(UNCATEGORIZED);
+    return ["All", ...[...set].sort(), UNCATEGORIZED];
+  }, [data?.categories, songs]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return songs.filter((s) => {
       if (q && !s.title.toLowerCase().includes(q)) return false;
       if (tab === "All") return true;
-      const tag = tags[s.title];
-      return tab === UNCATEGORIZED ? !tag : tag === tab;
+      return effectiveCategory(s.title, s.category) === tab;
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [songs, query, tab, tags]);
 
   return (
@@ -91,7 +100,7 @@ function Library() {
         </div>
 
         <div className="mt-6 -mx-1 flex gap-1 overflow-x-auto pb-1">
-          {TABS.map((t) => (
+          {tabs.map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -154,7 +163,7 @@ function Library() {
                       {song.title}
                     </Link>
                     <p className="truncate text-xs text-muted-foreground">
-                      {tags[song.title] ?? UNCATEGORIZED}
+                      {effectiveCategory(song.title, song.category)}
                     </p>
                   </div>
                   <DropdownMenu>
