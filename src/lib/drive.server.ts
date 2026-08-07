@@ -1,4 +1,4 @@
-const BASE_CATEGORIES = ["Worship", "Praise", "Christmas", "Easter", "Hindi Hymns"] as const;
+const BASE_CATEGORIES = ["Worship", "Praise", "Christmas", "Easter"] as const;
 
 /** Map a Drive subfolder name onto an existing category, or keep it as a new one. */
 export function categoryFromFolderName(folderName: string): string {
@@ -7,7 +7,6 @@ export function categoryFromFolderName(folderName: string): string {
   for (const c of BASE_CATEGORIES) {
     if (lower.includes(c.toLowerCase())) return c;
   }
-  if (lower.includes("hymn")) return "Hindi Hymns";
   return name
     .replace(/[_-]+/g, " ")
     .replace(/\s+/g, " ")
