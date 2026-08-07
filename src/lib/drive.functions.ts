@@ -23,7 +23,7 @@ export const listSongs = createServerFn({ method: "GET" }).handler(
 
     type Entry = { id: string; name: string; category: string; folderName: string };
     const queue: Entry[] = [
-      { id: rootFolderId, name: "root", category: "Uncategorized", folderName: "" },
+      { id: rootFolderId, name: "root", category: "", folderName: "" },
     ];
 
     while (queue.length > 0) {
