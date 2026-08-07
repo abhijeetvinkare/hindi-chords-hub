@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/song/$fileId")({
   validateSearch: (search: Record<string, unknown>) => ({
-    title: typeof search.title === "string" ? search.title : "",
+    title: typeof search["title"] === "string" ? (search["title"] as string) : "",
   }),
   head: () => ({
     meta: [
